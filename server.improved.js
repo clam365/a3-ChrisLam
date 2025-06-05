@@ -1,108 +1,99 @@
-const http = require( "http" ),
-      fs   = require( "fs" ),
-      // IMPORTANT: you must run `npm install` in the directory for this assignment
-      // to install the mime library if you"re testing this on your local machine.
-      // However, Glitch will install it automatically by looking in your package.json
-      // file.
-      mime = require( "mime" ),
-      dir  = "public/",
-      port = 3000
+const { MongoClient, ServerApiVersion } = require('mongodb');
+const express = require("express");
+app = express();
+require('dotenv').config();
 
-const appdata = [] //object to handle data
+app.use(express.static('public'));
+app.use(express.json());
+require('dotenv').config();
 
-const server = http.createServer( function( request,response ) {
-  if( request.method === "GET" ) {
-    handleGet( request, response )    
-  }else if( request.method === "POST" ){
-    handlePost( request, response ) 
+let collection = null;
+const appdata = [];
+
+// Create a MongoClient with a MongoClientOptions object to set the Stable API version
+const uri = process.env.MONGODB_API_KEY;
+console.log("Connecting", uri);
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  }
+});
+
+//Run MongoDB
+async function run() {
+  try {
+    // Connect the client to the server	(optional starting in v4.7)
+    await client.connect();
+    // Send a ping to confirm a successful connection
+    await client.db("admin").command({ ping: 1 });
+    collection = client.db("a3-ChrisLam").collection("waitlist_entries");
+    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    app.listen(process.env.PORT || 3000)
+  } catch (err) {
+    console.log("MongoDB has an connection error:", err);
+  }
+}
+run().catch(console.dir);
+
+
+//Get Request
+app.get('/waitlist_entries', async (req, res) => {
+  try {
+    if (!collection) {
+      return res.status(500).json({ error: "No collection found" });
+    }
+    const entries = await collection.find({}).toArray();
+    res.status(200).json(entries);
+  }
+  catch (err) {
+      console.error("Error getting waitlist entries");
+      res.status(500).json({err: "Error getting entries"});
   }
 })
 
-// Get Function
-const handleGet = function (request, response) {
-  if (request.url === "/") {
-    sendFile(response, "public/index.html"); //first page on loadup routed to this
+
+//Post Request
+app.post('/waitlist_entries', async (req, res) => {
+  console.log("POST /waitlist_entries received:", req.body);
+  try {
+    if (!collection) {
+      return res.status(500).json({ error: "No collection found" });
+    }
+    collection = client.db("a3-ChrisLam").collection("waitlist_entries"); //grab our collection of entries
+    const newEntry = req.body;
+
+    newEntry.drinkPersona = assignDrinkPersona(newEntry.firstName); //assign the drink persona
+
+    console.log(newEntry);
+    const result = await collection.insertOne(newEntry); //add to waitlist_entries
+    console.log("new entry went thru");
+    res.status(201).json({ status: "success", insertedId: result.insertedId });
   }
-  else if (request.url === "/entries") { // entry requests. for future reference, the else if statement here can be used repeatedly for other things
-    response.writeHead(200, { "Content-Type": "application/json" });
-    response.end(JSON.stringify(appdata));
-  } else {
-    const filename = dir + request.url.slice(1);
-    sendFile(response, filename);
-  }
-};
-
-// Posts
-const handlePost = function (request, response) {
-  let dataString = "";
-
-  request.on("data", function (data) {
-    dataString += data;
-  });
-
-  request.on("end", function () {
-
-    //submitting data, it also will do calculations for drinkPersona
-    if (request.url === "/submit") {
-      const customerData = JSON.parse(dataString);
-      customerData.id = appdata.length;
-      assignDrinkPersona(customerData); // assign Persona based on the current data
-      appdata.push(customerData);
-
-      //indicate that we have successfully submitted, and alerts + console logs are seen
-      response.writeHead(200, { "Content-Type": "application/json" });
-      response.end(JSON.stringify({ status: "success", entry: customerData }));
+    catch (err) {
+      console.error("Error inserting entry");
+      res.status(500).json({ error: "Error inserting entry" });
     }
-    //deleting an entry
-    else if (request.url === "/delete") {
-      const index = JSON.parse(dataString);
-      appdata.splice(parseInt(index.id), 1);
-      // reassign IDs
-      appdata.forEach((entry, i) => entry.id = i);
 
-      response.writeHead(200, { "Content-Type": "application/json" });
-      response.end(JSON.stringify({ status: "deleted" }));
-    }
-    //it did not work
-    else {
-      response.writeHead(404, { "Content-Type": "application/json" });
-      response.end(JSON.stringify({ error: "Invalid POST route" }));
-    }
-  });
-};
+});
 
+/*
+  assignDrinkPersona divides up the alphabet in 4 quadrants. Based on the form entry's first name, it gets assigned a quadrant, and it then becomes their persona.
+ */
+function assignDrinkPersona(firstName) {
+  const firstChar = firstName?.[0].toUpperCase();
+  let persona = "";
 
-// This is my derived field function which uses firstName. The alphabet is split into 4 ways, and so using the first character of their first name,
-// I created a mini persona for them for fun.
-function assignDrinkPersona(item) {
-  const firstChar = item.firstName[0].toUpperCase();
-  if (firstChar >= 'A' && firstChar <= 'F') item.persona = "Strawberry Matcha";
-  else if (firstChar >= 'G' && firstChar <= 'L') item.persona = "Brown Sugar Cold Brew";
-  else if (firstChar >= 'M' && firstChar <= 'R') item.persona = "Blueberry Matcha";
-  else item.persona = "Chai Latte";
+  if (firstChar >= 'A' && firstChar <= 'F') persona = "Strawberry Matcha";
+  else if (firstChar >= 'G' && firstChar <= 'L') persona = "Brown Sugar Cold Brew";
+  else if (firstChar >= 'M' && firstChar <= 'R') persona = "Blueberry Matcha";
+  else persona = "Chai Latte";
+
+  return persona;
 }
 
 
-const sendFile = function( response, filename ) {
-   const type = mime.getType( filename ) 
 
-   fs.readFile( filename, function( err, content ) {
 
-     // if the error = null, then we"ve loaded the file successfully
-     if( err === null ) {
 
-       // status code: https://httpstatuses.com
-       response.writeHeader( 200, { "Content-Type": type })
-       response.end( content )
-
-     }else{
-
-       // file not found, error code 404
-       response.writeHeader( 404 )
-       response.end( "404 Error: File Not Found" )
-
-     }
-   })
-}
-
-server.listen( process.env.PORT || port )

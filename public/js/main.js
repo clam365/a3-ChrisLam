@@ -21,7 +21,7 @@ const submit = async function( event ) {
   console.log("data collected");
 
   //Fetch for submitting button
-  const response = await fetch( "/submit", {
+  const response = await fetch( "/waitlist_entries", {
     method:"POST",
     headers: {
       "Content-Type": "application/json"
@@ -29,9 +29,6 @@ const submit = async function( event ) {
     body 
   })
 
-  console.log("Response receieved")
-  const result = await response.json();
-  console.log(result)
   //Alert to the user and for us on debugging
   alert(`Thank you! You've been added to the waitlist. As part of our personas for a free drink, you are a ${assignDrinkPersona(data.firstName)}!!! Please keep a lookout for our messages! `);
   document.getElementById("ourForm").reset();
@@ -46,63 +43,46 @@ function assignDrinkPersona(firstName) {
   else return "Chai Latte";
 }
 
-// Loads data into the table on the admin page
 const loadTableData = async function () {
-  const response = await fetch("/entries");
-  const data = await response.json();
-
-  //id of Table body
   const tbody = document.getElementById("customerDataBody");
-  tbody.innerHTML = ""; // clear previous content
+  if (!tbody) return;
+  tbody.innerHTML = ""; //clear table initially
 
+  try {
+    const response = await fetch("/waitlist_entries"); //fetch the data
+    if (!response.ok) {
+      const text = await response.text();
+      alert("Server error: " + text);
+      return;
+    }
 
-  //Mapping over each possible form fillout. It has the base headers
-  data.forEach(entry => {
-    const row = document.createElement("tr");
+    const entries = await response.json();
+    //Populating our waitlist entries
+    entries.forEach(entry => {
+      const row = document.createElement("tr");
 
-    row.innerHTML = `
+      row.innerHTML = `
       <td>${entry.firstName}</td>
       <td>${entry.lastName}</td>
       <td>${entry.email}</td>
       <td>${entry.phoneNumber || ""}</td>
-      <td>${entry.persona}</td>
-      <td><button style="background-color: #ed4337; color: white; border-radius: 10px; border: none; padding: 10px" onclick="deleteEntry(${entry.id})">Delete</button></td>
+      <td>${entry.drinkPersona}</td>
+      <td><button style="background-color: #ed4337; color: white; border-radius: 10px; border: none; padding: 10px" onclick="${entry.id}">Delete</button></td>
     `;
-
-    tbody.appendChild(row); //adding our user data after submitting
-  });
-};
-
-
-// Delete a specific entry
-const deleteEntry = async function (id) {
-  const response = await fetch("/delete", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ id })
-  });
-
-  console.log("Delete response status:", response.status);
-
-  if (response.ok) {
-    await loadTableData(); //rerender for responsiveness
-    console.log("Table data reloaded after delete.");
-  } else {
-    console.error("Failed to delete entry.");
+      tbody.appendChild(row); //adding our user data after submitting
+    })
   }
-};
+  catch (err) {
+    console.error("Could not load entries", err)
+  }
+}
 
-window.onload = function () {
-  const form = document.getElementById("ourForm");
-
-  //submit logic for index.html
+//needed listeners
+window.addEventListener("DOMContentLoaded", () => {
+  const form = document.querySelector("#ourForm");
   if (form) {
     form.addEventListener("submit", submit);
   }
+  loadTableData().then();
+});
 
-  //table data for tables.html
-  const customerDataTable = document.getElementById("customerDataTable");
-  if (customerDataTable) {
-    loadTableData().then();
-  }
-};

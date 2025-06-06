@@ -1,14 +1,31 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const express = require("express");
 const {ObjectId} = require('mongodb');
+const cookie = require('cookie-session')
 app = express();
 require('dotenv').config();
 
-app.use(express.static('public'));
-app.use(express.json());
-require('dotenv').config();
+//Start using the cookies
+app.use( cookie({
+  name: 'session',
+  keys: ['key1', 'key2']
+}))
 
-let collection = null;
+//MIDDLEWARE for our account access situation
+app.use( function( req,res,next) {
+  //based on the structure of the middleware, css will not go thru bc express.static('public') is after. we need to whitelist some files
+  if( req.session.login === true || req.path.startsWith('/css') || req.path.startsWith('/'))
+    next()
+  else
+    res.sendFile( __dirname + '/public/index.html' )
+})
+
+// serve up static files in the directory public,
+app.use( express.static('public') )
+app.use(express.json());
+app.use(express.urlencoded({extended: true})) //this to get data from default form action
+
+
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const uri = process.env.MONGODB_API_KEY;
@@ -21,6 +38,10 @@ const client = new MongoClient(uri, {
   }
 });
 
+//Initialize tables
+let collection = null;
+let usersCollection = null;
+
 //Run MongoDB
 async function run() {
   try {
@@ -29,6 +50,8 @@ async function run() {
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     collection = client.db("a3-ChrisLam").collection("waitlist_entries");
+    usersCollection = client.db('a3-ChrisLam').collection("user");
+
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
     app.listen(process.env.PORT || 3000)
   } catch (err) {
@@ -37,6 +60,41 @@ async function run() {
 }
 run().catch(console.dir);
 
+//taken from using.cookies.md from Joshua Cuneo
+app.post( '/login', async (req,res)=> {
+  try {
+    const {username, password} = req.body;
+    if (!usersCollection) {
+      console.log("User Collection not found")
+      return res.status(500).json({ error: "No user collection found" });
+    }
+
+    //Find the user in db that the person entered in the input fields
+    const user = await usersCollection.findOne({ username });
+    console.log("User found:", user)
+
+    //Password and Username Check
+    if (user && user.password === password) {
+      console.log("Logged in Successfully");
+      req.session.login = true;
+      console.log("Session:", req.session)
+      return res.redirect('/main.html'); //redirect to main after successful attempt
+    }
+    else {
+       return res.status(401).sendFile(__dirname + '/public/index.html'); //failure, try again
+    }
+  }
+  catch (err) {
+    console.error("Login error", err);
+    res.status(500).send("Login Error");
+  }
+})
+
+//Log out
+app.get('/logout', (req, res) => {
+  req.session = {};
+  res.redirect('/');
+});
 
 //Get Request
 app.get('/waitlist_entries', async (req, res) => {
@@ -106,7 +164,6 @@ app.put('/waitlist_entries/:id', async (req, res) => {
 
   try {
     updatedData.drinkPersona = assignDrinkPersona(updatedData.firstName); //update
-
 
     //update whole entry in the DB
     const result = await collection.updateOne(

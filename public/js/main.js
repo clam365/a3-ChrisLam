@@ -14,6 +14,7 @@ const submit = async function( event ) {
     firstName: document.querySelector("#firstName").value,
     lastName: document.querySelector("#lastName").value,
     email: document.querySelector("#email").value,
+    luckyNumber: document.querySelector("#luckyNumber").value,
     phoneNumber: document.querySelector("#phoneNumber").value
   };
 
@@ -62,12 +63,20 @@ const loadTableData = async function () {
       const row = document.createElement("tr");
 
       row.innerHTML = `
-      <td>${entry.firstName}</td>
-      <td>${entry.lastName}</td>
-      <td>${entry.email}</td>
-      <td>${entry.phoneNumber || ""}</td>
-      <td>${entry.drinkPersona}</td>
-      <td><button style="background-color: #ed4337; color: white; border-radius: 10px; border: none; padding: 10px" onclick="${entry.id}">Delete</button></td>
+      <td class="p-2">${entry.firstName}</td>
+      <td class="p-2">${entry.lastName}</td>
+      <td class="p-2">${entry.email}</td>
+      <td class="p-2">${entry.phoneNumber || ""}</td>
+      <td class="p-2">${entry.luckyNumber}</td>
+      <td class="p-2">${entry.drinkPersona}</td>
+      <td class="p-2 flex items-center ">
+        <button onclick="${entry.id}">
+          <img src="pencil.png" alt="edit"/> 
+        </button>
+        <button  onclick="${entry.id}">
+          <img src="trash.png" alt="delete"/> 
+        </button>
+      </td>
     `;
       tbody.appendChild(row); //adding our user data after submitting
     })

@@ -4,7 +4,6 @@ Baseline Requirements
 - (15 points) a `Server`, created using Express (no alternatives will be accepted for this assignment)
 - (10 points) a `Results` functionality which shows all data associated with a logged in user (except passwords)
 - (15 points) a `Form/Entry` functionality which allows users to add, modify, and delete data items (must be all three!) associated with their user name / account.
-- Persistent data storage in between server sessions using [mongodb](https://www.mongodb.com/cloud/atlas) (you *must* use mongodb for this assignment). You can use either the [official mongodb node.js library](https://www.npmjs.com/package/mongodb) or use the [Mongoose library](https://www.npmjs.com/package/mongoose), which enables you to define formal schemas for your database. Please be aware that the course staff cannot provide in-depth support for use of Mongoose.  (15 pts.)
 - (10 points) Use of a [CSS framework or template](https://github.com/troxler/awesome-css-frameworks). This should do the bulk of your styling/CSS for you and be appropriate to your application.
   For example, don't use [NES.css](https://nostalgic-css.github.io/NES.css/) (which is awesome!) unless you're creating a game or some type of retro 80s site.
 
@@ -19,8 +18,6 @@ For example, when visiting the home page for the assignment, users could be pres
 successful, they are taken to the main application. If they fail, they are sent back to the login to try again. For this assignment, it is acceptable to simply create
 new user accounts upon login if none exist; however, you must alert your users to this fact.
 
-Node.js:
-- A server using Express and a persistent database (mongodb).
 
 General:
 - (10 points) Your site should achieve at least 90% on the `Performance`, `Best Practices`, `Accessibility`, and `SEO` tests
@@ -30,7 +27,6 @@ General:
 Deliverables
 ---
 
-5. Fork this repository and modify the README to the specifications below.
 6. Create and submit a Pull Request to the original repo. Name the pull request using the following template: `a3-FirstnameLastname`.
 
 Acheivements
@@ -77,24 +73,22 @@ You should have at least two different input types for this assignment. The purp
 ## North Star Cafe Waitlist App
 https://a3-chrislam.vercel.app
 
-I have always been into making drinks especially in a home cafe setting. This project acts as a waitlist signup for "prospective customers" where they can see the potential menu once it is completed in a flexbox webdev setting.
-On the top right, there is an Admin Login, which the prospected Admin enters his username and password to see all the possible entries. They can then add (use the form), modify, and delete. Logout is there too.
+I have always been into making drinks especially in a home cafe setting. This project acts as a waitlist signup for prospective customers where they can see the potential menu in the future. On the top right, the person filling out the form can see their entries, while additionally editing their information. For anyone else they want to fill it out for will be there.
 
-The CSS framework I used was shadcn. shadcn goes hand in hand with Next.js, and is easy to use, because it already has a set theme for the whole application. It is the kind of theme I did in vanilla htmll js css. It is easy, because you can create a shadcn/nextjs project all together, it is set up, and all you have to do to get the components is run the npm install comonents in the documentation and voila, just use the intances after importation.
-
-The login info will just be basic for now:
+The login info will just be basic for now. The one with cookies and basic authentication (username & password) is what we did. Below is the info for you to login to:
 
 Username: admin
 
 Password: admin
 
+The CSS framework that I used was TailwindCSS. TailwindCSS is a utility CSS framework, making it easier to add in-line CSS, great for a power user like me (I have coded with this many times). Through Tailwind, in essence I removed the CSS file worked with in A2 and put it in-line in the relevant HTML files.
+
+I did not use any other frameworks, however, I did have to grab icon images from lucide-react for the tables (Pencil for edit and Trash for delete).
 
 Include a very brief summary of your project here. Images are encouraged, along with concise, high-level text. Be sure to include:
 
 - challenges you faced in realizing the application
 - what authentication strategy you chose to use and why (choosing one because it seemed the easiest to implement is perfectly acceptable)
-- what CSS framework you used and why
-    - include any modifications to the CSS framework you made via custom CSS you authored
 - a list of Express middleware packages you used and a short (one sentence) summary of what each one does. If you use a custom function, please add a little more detail about what it does.
 
 ## Technical Achievements

@@ -9,8 +9,16 @@
   "dependencies": {
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "lucide": "^0.513.0",
+    "lucide-react": "^0.513.0",
     "mime": "^2.6.0",
     "mongodb": "^6.17.0",
     "node": "^22.16.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.4",
+    "postcss-cli": "^11.0.1",
+    "tailwindcss": "^3.4.17"
   }
 }

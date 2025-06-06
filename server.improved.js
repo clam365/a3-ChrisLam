@@ -89,7 +89,6 @@ function assignDrinkPersona(firstName) {
   else if (firstChar >= 'G' && firstChar <= 'L') persona = "Brown Sugar Cold Brew";
   else if (firstChar >= 'M' && firstChar <= 'R') persona = "Blueberry Matcha";
   else persona = "Chai Latte";
-
   return persona;
 }
 

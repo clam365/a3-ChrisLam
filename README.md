@@ -1,5 +1,5 @@
 ## North Star Cafe Waitlist App
-https://a3-chrislam.vercel.app
+https://a3-chrislam.onrender.com 
 
 I have always been into making drinks especially in a home cafe setting. This project acts as a waitlist signup for prospective customers where they can see the potential menu in the future. On the top right, the person filling out the form can see their entries, while additionally editing their information. For anyone else they want to fill it out for will be there.
 
@@ -16,9 +16,9 @@ I did not use any other frameworks, however, I did have to grab icon images from
 Some challenges I faced was definitely the login functionality with cookies. I have never done that on my own, and it was a lot more diificult to get everything wrapped around the middleware for the first time. However, I did it!
 
 ## Technical Achievements
-- **Tech Achievement 1**: Deployed on Vercel instead of Glitch
+- **Tech Achievement 1**: Deployed on Render instead of Glitch
 
-I hosted my website on Vercel instead of Glitch. I have used Vercel multiple times for my Next.js projects, as it is so easy to use as a power/intermediate user. This is because you can connect your GitHub to it, you select your project, and boom host after putting in any other data such as .env. It is better because it actually stays awake AND if you ever push to main, Vercel will see that and update the changes on the actual deployment website!
+I hosted this app on Render instead of Glitch. This was my first time using it, and it was a great experience. I just had to connect to GitHub, get the repo, then put in my API_KEY, BOOM DEPLOY. The reason I chose this over glitch is because I just found out Glitch is super old, and it does not support the newer versions of Node, MongoDB, and Express. I know in the assignment there were steps but it was impossible bc the errors were in the node modules and it was not worth destroying my project over. Render handles everything better than Glitch, AND is more modern for this type of work, where it neeeds and Express backend.
 
 ### Design/Evaluation Achievements
 - **Design Achievement 1**: Describing CRAP Principles

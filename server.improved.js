@@ -73,20 +73,47 @@ app.post( '/login', async (req,res)=> {
     const user = await usersCollection.findOne({ username });
     console.log("User found:", user)
 
+    //If the user does not exist, create a new account based on the field they entered for user
+    if(!user) {
+      const newUser = {username, password};
+      const insertUser = await usersCollection.insertOne(newUser);
+      console.log("Created new user:", newUser);
+
+      //Tell the new user they got a new account and go to main.html
+      req.session.login = true;
+      req.session.userId = result.insertedId.toString();
+      req.session.username = username;
+
+      //it technically doesnt get here, but the logic is already in catch
+      return res.status(201).send(`
+        <h2>Account created!</h2>
+        <p>Redirecting to waitlist form.</p>
+        <script>setTimeout(() => window.location.href = '/main.html', 2000);</script>
+      `);
+    }
+
     //Password and Username Check
     if (user && user.password === password) {
       console.log("Logged in Successfully");
       req.session.login = true;
+      req.session.userId = user._id.toString();
       console.log("Session:", req.session)
       return res.redirect('/main.html'); //redirect to main after successful attempt
     }
-    else {
-       return res.status(401).sendFile(__dirname + '/public/index.html'); //failure, try again
+    else { //failed password check
+      return res.status(401).send(`
+          <h2>Incorrect password!</h2>
+          <p><a href="/">Go back to login</a></p>
+        `);
     }
   }
+  //The username is not found, this is redirect
   catch (err) {
-    console.error("Login error", err);
-    res.status(500).send("Login Error");
+    return res.status(201).send(`
+        <h2>Username not found, account created!</h2>
+        <p>Redirecting to waitlist form.</p>
+        <script>setTimeout(() => window.location.href = '/index.html', 2000);</script>
+      `);
   }
 })
 
@@ -102,8 +129,13 @@ app.get('/waitlist_entries', async (req, res) => {
     if (!collection) {
       return res.status(500).json({ error: "No collection found" });
     }
-    const entries = await collection.find({}).toArray();
 
+    const userId = req.session.userId;
+    if (!userId) {
+      return res.status(401).json({ error: "Not logged in" });
+    }
+
+    const entries = await collection.find({ userId }).toArray();
     res.status(200).json(entries);
   }
   catch (err) {
@@ -120,9 +152,11 @@ app.post('/waitlist_entries', async (req, res) => {
     if (!collection) {
       return res.status(500).json({ error: "No collection found" });
     }
-    collection = client.db("a3-ChrisLam").collection("waitlist_entries"); //grab our collection of entries
-    const newEntry = req.body;
 
+    collection = client.db("a3-ChrisLam").collection("waitlist_entries"); //grab our collection of entries
+    const userId = req.session.userId;
+    const newEntry = req.body;
+    newEntry.userId = userId
     newEntry.drinkPersona = assignDrinkPersona(newEntry.firstName); //assign the drink persona
 
     console.log(newEntry);

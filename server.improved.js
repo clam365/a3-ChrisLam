@@ -101,19 +101,13 @@ app.post( '/login', async (req,res)=> {
       return res.redirect('/main.html'); //redirect to main after successful attempt
     }
     else { //failed password check
-      return res.status(401).send(`
-          <h2>Incorrect password!</h2>
-          <p><a href="/">Go back to login</a></p>
-        `);
+      return res.redirect('/?msg=' + encodeURIComponent('Incorrect password'));
+
     }
   }
   //The username is not found, this is redirect
   catch (err) {
-    return res.status(201).send(`
-        <h2>Username not found, account created!</h2>
-        <p>Redirecting to waitlist form.</p>
-        <script>setTimeout(() => window.location.href = '/index.html', 2000);</script>
-      `);
+    return res.redirect('/?msg=' + encodeURIComponent('Account not found. Created a new one for you!'));
   }
 })
 

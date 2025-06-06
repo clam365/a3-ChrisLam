@@ -31,6 +31,25 @@
     <br/>
     <button id="submitLogin" type="submit" class="text-white bg-black p-3 rounded-md hover:bg-offBlack transition w-full m-auto">Sign In</button>
   </form>
+  <br/>
+  <br/>
+  <div id="message" class="mt-10 w-1/2 m-auto text-center text-red-600 flex justify-center"></div>
+
+
+  <script>
+    // Get URL parameter 'msg'
+    const params = new URLSearchParams(window.location.search);
+    const msg = params.get('msg');
+    if (msg) {
+      const messageDiv = document.getElementById('message');
+      messageDiv.textContent = msg;
+      // Clear message after 2 seconds
+      setTimeout(() => {
+        messageDiv.textContent = '';
+      }, 2000);
+    }
+  </script>
+
 </div>
 </body>
 </html>

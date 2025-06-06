@@ -1,81 +1,9 @@
-
-Baseline Requirements
----
-- (15 points) a `Server`, created using Express (no alternatives will be accepted for this assignment)
-- (10 points) a `Results` functionality which shows all data associated with a logged in user (except passwords)
-- (15 points) a `Form/Entry` functionality which allows users to add, modify, and delete data items (must be all three!) associated with their user name / account.
-- (10 points) Use of a [CSS framework or template](https://github.com/troxler/awesome-css-frameworks). This should do the bulk of your styling/CSS for you and be appropriate to your application.
-  For example, don't use [NES.css](https://nostalgic-css.github.io/NES.css/) (which is awesome!) unless you're creating a game or some type of retro 80s site.
-
-Your application is required to demonstrate the use of the following concepts:
-
-HTML:
-- (5 points) HTML input tags and form fields of various flavors (`<textarea>`, `<input>`, checkboxes, radio buttons, etc.)
-- HTML that can display all data *for a particular authenticated user*. Note that this is different from the last assignnment, which required the display of all data in memory on the server.
-
-Note that it might make sense to have two pages for this assignment, one that handles login / authentication and one that contains the rest of your application.
-For example, when visiting the home page for the assignment, users could be presented with a login form. After submitting the login form, if the login is
-successful, they are taken to the main application. If they fail, they are sent back to the login to try again. For this assignment, it is acceptable to simply create
-new user accounts upon login if none exist; however, you must alert your users to this fact.
-
-
-General:
-- (10 points) Your site should achieve at least 90% on the `Performance`, `Best Practices`, `Accessibility`, and `SEO` tests
-  using Google [Lighthouse](https://developers.google.com/web/tools/lighthouse) (don't worry about the PWA test, and don't worry about scores for mobile devices).
-  Test early and often so that fixing problems doesn't lead to suffering at the end of the assignment.
-
-Deliverables
----
-
-6. Create and submit a Pull Request to the original repo. Name the pull request using the following template: `a3-FirstnameLastname`.
-
-Acheivements
----
-
-
-
-*Design/UX*
-- (5 points) Describe how your site uses the CRAP principles in the Non-Designer's Design Book readings.
-  Which element received the most emphasis (contrast) on each page?
-  How did you use proximity to organize the visual information on your page?
-  What design elements (colors, fonts, layouts, etc.) did you use repeatedly throughout your site?
-  How did you use alignment to organize information and/or increase contrast for particular elements.
-  Write a paragraph of at least 125 words *for each of four principles* (four paragraphs, 500 words in total).
-
-
-FAQ
----
-
-**Q: I'm confused about how user accounts work for this assignment.**
-
-For the base requirements (discounting the achievements), it should follow this logic:
-
-1. If the user logs in and the account does not exist, create the account and inform the user the account has been created.
-2. If the user logs in and the account exists but the password is incorrect, inform the user.
-3. If the user logs in, the account exists, and the password is correct, then take the user to the page that shows the data specific to the user.
-
-Note that implementing some of the technical achievements may override this requirement, which is fine.
-
-**Q: I'm getting a syntax error when trying to connect to MongoDB using the code in the tutorial.**
-
-Your version of Node may be outdated. Check out [this link](https://stackoverflow.com/questions/77749884/session-options-session-syntaxerror-unexpected-token-mongoose-give-a) for more information.
-
-**Q: Do I have to handle multiple user accounts?**
-
-No. You only need one dummy account UNLESS you are doing the GitHub login technical achievement. Make sure you mention in your README how the user should log in!
-
-
-**Q: Does "HTML input tags and form fields of various flavors" mean that we need to use multiple different kinds of inputs, or does it mean that we just need to use some form of input?**
-
-You should have at least two different input types for this assignment. The purpose is to show your understanding beyond the simple `input` type you saw in A2.
-
-
 ## North Star Cafe Waitlist App
 https://a3-chrislam.vercel.app
 
 I have always been into making drinks especially in a home cafe setting. This project acts as a waitlist signup for prospective customers where they can see the potential menu in the future. On the top right, the person filling out the form can see their entries, while additionally editing their information. For anyone else they want to fill it out for will be there.
 
-The login info will just be basic for now. The one with cookies and basic authentication (username & password) is what we did. Below is the info for you to login to:
+The login info will just be basic for now (OAuth too much for me at the current moment). The one with cookies and basic authentication (username & password) is what we did. Below is the info for you to login to. However, if you do not have an account, you can create a new one automatically! After the toast, log in with your new one.
 
 Username: admin
 
@@ -83,17 +11,14 @@ Password: admin
 
 The CSS framework that I used was TailwindCSS. TailwindCSS is a utility CSS framework, making it easier to add in-line CSS, great for a power user like me (I have coded with this many times). Through Tailwind, in essence I removed the CSS file worked with in A2 and put it in-line in the relevant HTML files.
 
-I did not use any other frameworks, however, I did have to grab icon images from lucide-react for the tables (Pencil for edit and Trash for delete).
+I did not use any other frameworks, however, I did have to grab icon images from lucide-react for the tables (Pencil for edit and Trash for delete). There were no other middleware packages used from express other than the ones used from the guide.
 
-Include a very brief summary of your project here. Images are encouraged, along with concise, high-level text. Be sure to include:
-
-- challenges you faced in realizing the application
-- what authentication strategy you chose to use and why (choosing one because it seemed the easiest to implement is perfectly acceptable)
-- a list of Express middleware packages you used and a short (one sentence) summary of what each one does. If you use a custom function, please add a little more detail about what it does.
+Some challenges I faced was definitely the login functionality with cookies. I have never done that on my own, and it was a lot more diificult to get everything wrapped around the middleware for the first time. However, I did it!
 
 ## Technical Achievements
 - **Tech Achievement 1**: Deployed on Vercel instead of Glitch
-  When I usually code static websites, Next.js is my preferred React framework, which offers server-side rendering and is great with Express and the preferred DB. Vercel works hand in hand with Next.js. It is a straight forwards web hosting service company. What happens is you can create your Next.js project, and once you are on Vercel, just login with your GitHub, and it will see the repo when creating a new project. After selecting that, you can also in any environment variables (aka our API key for MongoDB), and boom deploy. Once it deploys, you have the option to create a custom url, but it has to end in .vercel.app. Additionally, anything pushed to the "main" branch of your repo will be then updated with the changes, and you can literally see the changes after a few minutes on the website. No need to do deploy again, its instant! This is better than Glitch because 1. no having to wait for startup, 2. Easier intermediate setup for bigger projects, 3. Better scalability
+
+I hosted my website on Vercel instead of Glitch. I have used Vercel multiple times for my Next.js projects, as it is so easy to use as a power/intermediate user. This is because you can connect your GitHub to it, you select your project, and boom host after putting in any other data such as .env. It is better because it actually stays awake AND if you ever push to main, Vercel will see that and update the changes on the actual deployment website!
 
 ### Design/Evaluation Achievements
 - **Design Achievement 1**: Describing CRAP Principles

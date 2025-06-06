@@ -1,5 +1,6 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const express = require("express");
+const {ObjectId} = require('mongodb');
 app = express();
 require('dotenv').config();
 
@@ -8,7 +9,6 @@ app.use(express.json());
 require('dotenv').config();
 
 let collection = null;
-const appdata = [];
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const uri = process.env.MONGODB_API_KEY;
@@ -45,6 +45,7 @@ app.get('/waitlist_entries', async (req, res) => {
       return res.status(500).json({ error: "No collection found" });
     }
     const entries = await collection.find({}).toArray();
+
     res.status(200).json(entries);
   }
   catch (err) {
@@ -77,6 +78,29 @@ app.post('/waitlist_entries', async (req, res) => {
     }
 
 });
+
+//Delete a waitlist entry by its entry id
+app.delete('/waitlist_entries/:id', async (req, res) => {
+  const {id} = req.params;
+  if (!ObjectId) {
+    return res.status(400).json({ error: 'ID format wrong' });
+  }
+
+  try {
+    const entryId = new ObjectId(id);
+    const entry = await collection.deleteOne({ _id: entryId });
+    if (entry.deletedCount === 1) {
+      res.status(200).json({ status: 'success', id }); //successful removal
+    }
+    else {
+      res.status(404).json({ error: 'Entry not found' });
+    }
+  }
+  catch (err) {
+    console.error("Error removing entry", err.message);
+    res.status(500).json({ error: 'Error removing entry' });
+  }
+})
 
 /*
   assignDrinkPersona divides up the alphabet in 4 quadrants. Based on the form entry's first name, it gets assigned a quadrant, and it then becomes their persona.

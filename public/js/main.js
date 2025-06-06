@@ -22,12 +22,13 @@ const submit = async function( event ) {
   console.log("data collected");
 
   //Fetch for submitting button
+  //this is needed; IDE says no, but we need
   const response = await fetch( "/waitlist_entries", {
     method:"POST",
     headers: {
       "Content-Type": "application/json"
     },
-    body 
+    body
   })
 
   //Alert to the user and for us on debugging
@@ -70,10 +71,10 @@ const loadTableData = async function () {
       <td class="p-2">${entry.luckyNumber}</td>
       <td class="p-2">${entry.drinkPersona}</td>
       <td class="p-2 flex items-center ">
-        <button onclick="${entry.id}">
+        <button onclick="${entry._id}">
           <img src="pencil.png" alt="edit"/> 
         </button>
-        <button  onclick="${entry.id}">
+        <button  onclick="deleteEntry('${entry._id}')"> 
           <img src="trash.png" alt="delete"/> 
         </button>
       </td>
@@ -85,6 +86,30 @@ const loadTableData = async function () {
     console.error("Could not load entries", err)
   }
 }
+
+//Deleting a waitlist_entry
+async function deleteEntry(id) {
+  if (!confirm("Are you sure you want to delete this entry?")) return; //user must confirm whether they want to delete or not
+
+  try {
+    const response = await fetch(`/waitlist_entries/${id}`, { //grab id
+      method: 'DELETE'
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      alert("Failed to remove: " + text);
+      return;
+    }
+
+    alert("Waitlist Entry removed");
+    await loadTableData(); // refresh the table
+  } catch (err) {
+    console.error("Error removing entry", err);
+    alert("could not remove entry.");
+  }
+}
+
 
 //needed listeners
 window.addEventListener("DOMContentLoaded", () => {

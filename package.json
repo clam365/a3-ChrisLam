@@ -3,6 +3,7 @@
   "version": "",
   "description": "",
   "author": "",
+  "main": "server.improved.js",
   "scripts": {
     "start": "node server.improved.js"
   },

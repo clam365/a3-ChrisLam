@@ -2,7 +2,7 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 const express = require("express");
 const {ObjectId} = require('mongodb');
 const cookie = require('cookie-session')
-app = express();
+const app = express();
 require('dotenv').config();
 
 //Start using the cookies

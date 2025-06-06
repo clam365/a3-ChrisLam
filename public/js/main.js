@@ -64,14 +64,15 @@ const loadTableData = async function () {
       const row = document.createElement("tr");
 
       row.innerHTML = `
-      <td class="p-2">${entry.firstName}</td>
-      <td class="p-2">${entry.lastName}</td>
-      <td class="p-2">${entry.email}</td>
-      <td class="p-2">${entry.phoneNumber || ""}</td>
-      <td class="p-2">${entry.luckyNumber}</td>
-      <td class="p-2">${entry.drinkPersona}</td>
+      <td class="p-2" contenteditable="true">${entry.firstName}</td>
+      <td class="p-2" contenteditable="true">${entry.lastName}</td>
+      <td class="p-2" contenteditable="true">${entry.email}</td>
+      <td class="p-2" contenteditable="true">${entry.phoneNumber || ""}</td>
+      <td class="p-2" contenteditable="true">${entry.luckyNumber}</td>
+      <td class="p-2" contenteditable="true">${entry.drinkPersona}</td>
       <td class="p-2 flex items-center ">
-        <button onclick="${entry._id}">
+        <button onclick="saveEntry('${entry._id}', this)">
+
           <img src="pencil.png" alt="edit"/> 
         </button>
         <button  onclick="deleteEntry('${entry._id}')"> 
@@ -87,7 +88,7 @@ const loadTableData = async function () {
   }
 }
 
-//Deleting a waitlist_entry
+//Deleting a waitlist entry
 async function deleteEntry(id) {
   if (!confirm("Are you sure you want to delete this entry?")) return; //user must confirm whether they want to delete or not
 
@@ -110,6 +111,45 @@ async function deleteEntry(id) {
   }
 }
 
+//Saving and updating a waitlist entry
+async function saveEntry(id, btn) {
+  const row = btn.closest("tr");
+  const tableCells = row.querySelectorAll("td[contenteditable='true']"); //we grab each cell type for editing
+
+  const [firstName, lastName, email, phoneNumber, luckyNumber] = tableCells;
+
+  //our updated data that will go through
+  const updatedData = {
+    firstName: firstName.textContent.trim(),
+    lastName: lastName.textContent.trim(),
+    email: email.textContent.trim(),
+    phoneNumber: phoneNumber.textContent.trim(),
+    luckyNumber: luckyNumber.textContent.trim()
+  };
+
+  //Sending it through to database
+  try {
+    const response = await fetch(`/waitlist_entries/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(updatedData)
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      alert("Failed to save: " + text);
+      return;
+    }
+
+    alert("Entry updated!");
+    await loadTableData(); //updated!!!
+  } catch (err) {
+    console.error("Error saving entry", err);
+    alert("Could not save entry.");
+  }
+}
 
 //needed listeners
 window.addEventListener("DOMContentLoaded", () => {

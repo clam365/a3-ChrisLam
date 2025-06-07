@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>CS4241 Assignment 3</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="North Star Cafe Waitlist.">
+    <script src="js/main.js"></script>
+    <link rel="stylesheet" href="css/main.css">
+
+    <!-- get rid of favicon error -->
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+</head>
+<body class="bg-white w-1/2 m-auto pt-10">
+<!-- This portion uses flexbox to align the image and text horizontally and vertically -->
+<div class="flex items-center m-auto gap-4 justify-between">
+    <div class="flex gap-4 items-center">
+        <img id="northstar" src="northstar.jpg" alt="northstar" class="w-12 h-12"/>
+        <h1 class="font-bold text-2xl">Northstar Cafe</h1>
+    </div>
+    <div class="flex gap-4 items-center">
+        <form action="/logout"><button><span  class="hover:underline">Logout</span></button></form>
+        <a href="tables.html" class="text-white bg-black p-2 rounded-md hover:bg-offBlack transition">Admin Tables</a>
+    </div>
+
+</div>
+<br/>
+<p class="text-labelColor">
+    Welcome to the Northstar Cafe Waitlist! We are currently in the process of making our menu, and if you are interested in seeing what we have to offer,
+    please fill out this form and we will email you when it is released. Thank you and we hope to see you soon!
+    <br/>
+    <br/>
+    ~ The Northstar Team
+</p>
+<hr/>
+
+<form id="ourForm" class="flex flex-col">
+    <br/>
+    <label for="firstName" class="text-md mb-2 text-labelColor">First Name<span class="text-[#ef4444]"> *</span></label>
+    <input required type="text" id="firstName" placeholder="ex. Jane" class="w-full p-4 border border-outline rounded bg-offWhite focus:outline-none focus:border-labelColor">
+    <br/>
+    <label for="lastName" class="text-md mb-2 text-labelColor">Last Name<span class="text-[#ef4444]"> *</span></label>
+    <input required type="text" id="lastName" placeholder="ex. Doe" class="w-full p-4 border border-outline rounded bg-offWhite focus:outline-none focus:border-labelColor">
+    <br/>
+    <label for="email" class="text-md mb-2 text-labelColor">Email<span class="text-[#ef4444]"> *</span></label>
+    <input required type="text" id="email" placeholder="ex. janedoe@gmail.com" class="w-full p-4 border border-outline rounded bg-offWhite focus:outline-none focus:border-labelColor">
+    <br/>
+    <label for="phoneNumber" class="text-md mb-2 text-labelColor">Phone Number (optional)</label>
+    <input type="text" id="phoneNumber" placeholder="ex. 123-456-7890" class="w-full p-4 border border-outline rounded bg-offWhite focus:outline-none focus:border-labelColor">
+    <br/>
+    <label for="luckyNumber" class="text-md mb-2 text-labelColor">What's your lucky number?<span class="text-[#ef4444]"> *</span></label>
+    <!-- Our second type of input number -->
+    <input required type="number" id="luckyNumber" placeholder="ex. 7" class="w-full p-4 border border-outline rounded bg-offWhite focus:outline-none focus:border-labelColor">
+    <br/>
+    <button id="submitButton" type="submit" class="text-white bg-black p-3 rounded-md hover:bg-offBlack transition">Submit Form</button>
+</form>
+
+</body>
+</html>
